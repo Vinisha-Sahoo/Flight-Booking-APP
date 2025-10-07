@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment - SkyBook</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <span class="plane">✈️</span> SkyBook
+    </div>
+    <div style="color:#555; font-size:1.2rem; margin-right:40px;">
+      Welcome, <span id="userName"></span>
+    </div>
+  </header>
+
+  <div style="margin-top:100px;">
+    <div style="width:70%;margin:0 auto;">
+      <div style="height:8px;background:#e5eaf6;border-radius:4px;box-shadow:0 2px 8px #e5eaf6;">
+        <div style="width:80%;height:100%;background:#2563eb;border-radius:4px;"></div>
+      </div>
+      <div style="text-align:right;color:#555;margin-top:8px;">Step 4 of 5</div>
+    </div>
+
+    <div style="display:flex;justify-content:center;align-items:center;flex-direction:column;margin-top:50px;">
+      <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:20px;">Payment Summary</h1>
+
+      <div id="paymentBox"
+        style="background:#fff;padding:30px 50px;border-radius:20px;box-shadow:0 4px 25px #e5eaf6;text-align:center;min-width:350px;">
+        <h2 id="airlineName" style="margin-bottom:10px;"></h2>
+        <p id="basePrice" style="font-size:1.1rem;color:#555;"></p>
+        <p id="taxes" style="font-size:1.1rem;color:#777;"></p>
+        <h3 id="totalPrice" style="font-size:1.4rem;color:#2563eb;margin:15px 0;"></h3>
+        <p style="color:#444;">Note: To select your own seat, ₹1000 extra.</p>
+
+        <label for="amountInput" style="display:block;margin-top:20px;font-weight:600;">Enter Payment Amount:</label>
+        <input type="number" id="amountInput" placeholder="Enter amount"
+          style="padding:10px;width:80%;border-radius:8px;border:1px solid #ccc;margin-top:8px;">
+
+        <button id="payBtn"
+          style="margin-top:25px;padding:10px 25px;background:#2563eb;color:white;border:none;border-radius:10px;font-size:1rem;cursor:pointer;">Pay
+          Now</button>
+
+        <p id="statusMsg" style="margin-top:20px;font-weight:600;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load user and airline info
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || "Guest";
+
+    const selectedAirline = JSON.parse(localStorage.getItem("selectedAirline"));
+
+    if (!selectedAirline) {
+      alert("No airline selected. Redirecting...");
+      window.location.href = "airlines.html";
+    }
+
+    const randomTax = Math.floor(Math.random() * 400) + 200; // ₹200–₹600
+    const total = selectedAirline.price + randomTax;
+
+    document.getElementById("airlineName").textContent = `✈️ ${selectedAirline.name}`;
+    document.getElementById("basePrice").textContent = `Base Fare: ₹${selectedAirline.price}`;
+    document.getElementById("taxes").textContent = `Taxes & Fees: ₹${randomTax}`;
+    document.getElementById("totalPrice").textContent = `Total: ₹${total}`;
+
+    localStorage.setItem("totalPrice", total);
+
+    document.getElementById("payBtn").addEventListener("click", () => {
+      const entered = parseInt(document.getElementById("amountInput").value);
+      const msg = document.getElementById("statusMsg");
+
+      if (isNaN(entered)) {
+        msg.textContent = "❌ Please enter a valid amount.";
+        msg.style.color = "red";
+        return;
+      }
+
+      if (entered === total) {
+        // Booking confirmed page
+        window.location.href = "booking_confirmed.html";
+      } else if (entered === total + 1000) {
+        // Seat selection page
+        window.location.href = "seat.html";
+      } else {
+        msg.textContent = "❌ Incorrect amount. Please recheck.";
+        msg.style.color = "red";
+      }
+    });
+  </script>
+</body>
+
+</html>

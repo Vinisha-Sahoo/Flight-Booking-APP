@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Airline - SkyBook</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="plane">✈️</span> SkyBook
+    </div>
+    <div style="color:#555; font-size:1.2rem; margin-right:40px;">
+      Welcome, <span id="userName"></span>
+    </div>
+  </header>
+
+  <div style="margin-top:100px;">
+    <div style="width:70%;margin:0 auto;">
+      <div style="height:8px;background:#e5eaf6;border-radius:4px;box-shadow:0 2px 8px #e5eaf6;">
+        <div style="width:60%;height:100%;background:#2563eb;border-radius:4px;"></div>
+      </div>
+      <div style="text-align:right;color:#555;margin-top:8px;">Step 3 of 5</div>
+    </div>
+
+    <div style="display:flex;justify-content:center;align-items:center;flex-direction:column;margin-top:50px;">
+      <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:30px;">Choose Your Airline</h1>
+
+      <!-- ✅ Added class for reliable JS targeting -->
+      <div class="airline-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;width:80%;">
+        <!-- Airline cards will load here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Display user name
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || "Guest";
+
+    const airlines = [
+      { name: "IndiGo", price: 4100 },
+      { name: "Air India", price: 3700 },
+      { name: "SpiceJet", price: 3950 },
+      { name: "Vistara", price: 4500 },
+      { name: "AirAsia India", price: 3800 },
+      { name: "Go Air", price: 3600 }
+    ];
+
+    // ✅ Much safer and cleaner selector
+    const grid = document.querySelector(".airline-grid");
+
+    airlines.forEach((airline) => {
+      const card = document.createElement("div");
+      card.className = "airline-card"; // optional class for styling in CSS
+      card.style.background = "#fff";
+      card.style.padding = "20px";
+      card.style.borderRadius = "15px";
+      card.style.boxShadow = "0 4px 20px #e5eaf6";
+      card.style.textAlign = "center";
+      card.style.cursor = "pointer";
+      card.style.transition = "0.3s";
+      card.innerHTML = `
+        <div style="height:80px;width:80px;background:#f3f6fc;margin:0 auto 15px;border-radius:10px;"></div>
+        <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:10px;">${airline.name}</h2>
+        <p style="font-size:1.1rem;color:#2563eb;font-weight:600;">₹${airline.price}</p>
+      `;
+
+      card.addEventListener("click", () => {
+        localStorage.setItem("selectedAirline", JSON.stringify(airline));
+        alert(`You selected ${airline.name} for ₹${airline.price}`);
+        window.location.href = "payment.html";
+      });
+
+      card.addEventListener("mouseenter", () => {
+        card.style.transform = "translateY(-5px)";
+        card.style.boxShadow = "0 6px 25px #dce5fb";
+      });
+      card.addEventListener("mouseleave", () => {
+        card.style.transform = "translateY(0)";
+        card.style.boxShadow = "0 4px 20px #e5eaf6";
+      });
+
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

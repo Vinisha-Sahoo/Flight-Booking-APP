@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Boarding Pass - SkyBook</title>
+  <style>
+    /* Fonts are local-system to avoid external loads. */
+    :root{
+      --bg:#f6f9ff;
+      --text:#052338;
+      --muted:#5b6878;
+      --card-bg:#fff;
+      --radius:14px;
+      --shadow: 0 18px 40px rgba(2,6,23,0.08);
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      background: linear-gradient(180deg, #eaf3ff 0%, #ffffff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--text);
+      padding:28px;
+    }
+
+    /* boarding pass wrapper */
+    .pass-wrap{
+      width:960px;
+      max-width:98%;
+      display:flex;
+      gap:22px;
+      align-items:stretch;
+    }
+
+    /* ticket left (main info) */
+    .ticket {
+      flex:1.2;
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* right stub */
+    .stub {
+      width:280px;
+      max-width:34%;
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    /* airline header */
+    .airline-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo-box{
+      width:72px;
+      height:48px;
+      border-radius:8px;
+      background:#f2f6ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:0.95rem;
+      color:#123;
+    }
+    .airline-name{
+      font-weight:800;
+      font-size:1.3rem;
+    }
+    .muted{ color:var(--muted); font-weight:600; font-size:0.85rem; }
+
+    .route {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:18px;
+      border-top:1px dashed rgba(10,30,60,0.06);
+      padding-top:18px;
+    }
+
+    .airport {
+      text-align:left;
+    }
+    .airport .code {
+      font-weight:900;
+      font-size:1.6rem;
+      margin-bottom:6px;
+    }
+    .airport .city {
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    .details {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    .detail {
+      background: #f8fbff;
+      padding:12px;
+      border-radius:10px;
+      font-weight:700;
+      color:#123;
+    }
+    .detail .label { display:block; font-weight:600; font-size:0.78rem; color:var(--muted); margin-bottom:6px; }
+    .detail .value { font-size:1.05rem; }
+
+    /* passenger list */
+    .passengers {
+      margin-top:18px;
+      border-top:1px dashed rgba(10,30,60,0.06);
+      padding-top:12px;
+    }
+    .pass-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(10,30,60,0.03); }
+    .pass-row:last-child{ border-bottom: none; }
+
+    /* stub layout */
+    .stub .big{
+      font-weight:900;
+      font-size:1.8rem;
+      text-align:center;
+    }
+    .stub .meta { margin-top:10px; display:flex; flex-direction:column; gap:10px; }
+    .code-box{
+      background:#000;
+      color:#fff;
+      padding:8px 10px;
+      border-radius:8px;
+      display:inline-block;
+      font-weight:900;
+      letter-spacing:2px;
+    }
+
+    /* color band (changes by airline) */
+    .accent-band {
+      height:12px;
+      width:100%;
+      border-radius:8px;
+      margin-top:14px;
+    }
+
+    /* buttons row */
+    .actions { display:flex; gap:12px; margin-top:18px; justify-content:flex-end; }
+    .btn {
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      border:none;
+    }
+    .btn.print { background:#2563eb; color:white; }
+    .btn.home { background:transparent; color:#2563eb; border:2px solid rgba(37,99,235,0.12); }
+
+    /* responsive */
+    @media (max-width:880px){
+      .pass-wrap{ flex-direction:column; }
+      .stub{ width:100%; max-width:unset; }
+      .ticket{ order:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="pass-wrap">
+    <div class="ticket" id="ticket">
+      <div class="airline-row">
+        <div class="logo-box" id="logoBox">LOGO</div>
+        <div>
+          <div class="airline-name" id="airlineName">Airline Name</div>
+          <div class="muted" id="flightSubtitle">Flight • Economy</div>
+        </div>
+      </div>
+
+      <div class="route" style="margin-top:18px;">
+        <div class="airport">
+          <div class="code" id="fromCode">DEL</div>
+          <div class="city" id="fromCity">New Delhi</div>
+        </div>
+
+        <div style="text-align:center; color:var(--muted);">
+          <div style="font-weight:900; font-size:1.05rem;" id="flightNum">AI 123</div>
+          <div style="font-size:0.9rem; margin-top:6px;" id="duration">02h 10m</div>
+        </div>
+
+        <div class="airport" style="text-align:right;">
+          <div class="code" id="toCode">BOM</div>
+          <div class="city" id="toCity">Mumbai</div>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="detail">
+          <span class="label">Date</span>
+          <span class="value" id="dateVal">—</span>
+        </div>
+        <div class="detail">
+          <span class="label">Boarding Time</span>
+          <span class="value" id="boardTime">—</span>
+        </div>
+
+        <div class="detail">
+          <span class="label">Gate / Zone</span>
+          <span class="value" id="gateZone">—</span>
+        </div>
+        <div class="detail">
+          <span class="label">Class</span>
+          <span class="value" id="classVal">Economy</span>
+        </div>
+      </div>
+
+      <div class="passengers" id="passengerList">
+        <!-- passengers injected here -->
+      </div>
+
+      <div class="accent-band" id="accentBand"></div>
+
+      <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+        <div style="font-size:0.85rem; color:var(--muted);">Booking Ref: <strong id="refCode">—</strong></div>
+      </div>
+    </div>
+
+    <div class="stub">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div><div class="muted">BOARDING PASS</div><div class="big" id="passSeat">—</div></div>
+          <div style="text-align:right">
+            <div class="muted">PNR</div>
+            <div class="code-box" id="pnrBox">—</div>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div>
+            <div class="muted">Flight</div>
+            <div id="stubFlight">—</div>
+          </div>
+          <div>
+            <div class="muted">Zone</div>
+            <div id="stubZone">—</div>
+          </div>
+          <div>
+            <div class="muted">Fare</div>
+            <div id="stubFare">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+        <button class="btn print" id="printBtn">Print / Save</button>
+        <button class="btn home" id="homeBtn">Return Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Helper utils
+    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function pad(n,len=2){ return String(n).padStart(len,'0'); }
+    function makeFlightNumber(airCode){
+      const num = randomInt(100,999);
+      return airCode.slice(0,2).toUpperCase() + " " + num;
+    }
+    function makePNR(){ return Math.random().toString(36).substring(2,8).toUpperCase(); }
+    function makeGate(){ const zones=['A','B','C','D','E']; return zones[randomInt(0,zones.length-1)] + randomInt(1,30); }
+
+    // Read stored data
+    const airlineObj = JSON.parse(localStorage.getItem('selectedAirline') || 'null');
+    const passengers = JSON.parse(localStorage.getItem('passengers') || '[]');
+    const route = JSON.parse(localStorage.getItem('flightRoute') || 'null');
+    const total = localStorage.getItem('totalPrice') || '—';
+    const selectedSeat = localStorage.getItem('selectedSeat') || '—';
+    const userName = localStorage.getItem('userName') || (passengers.length? passengers[0].name : 'Passenger');
+
+    // Fallbacks
+    const airlineName = airlineObj ? airlineObj.name : 'Unknown Airline';
+    const airlineBase = airlineObj ? airlineObj.price : '—';
+
+    // airline visual theme mapping
+    const airlineColors = {
+      "IndiGo": "#1a73e8",
+      "Air India": "#d32f2f",
+      "SpiceJet": "#ff6f00",
+      "Vistara": "#7b3e98",
+      "AirAsia India": "#e53935",
+      "Go Air": "#00a6a6",
+      // default
+      "default": "#2563eb"
+    };
+    const accent = airlineColors[airlineName] || airlineColors['default'];
+
+    // Populate UI
+    document.getElementById('airlineName').textContent = airlineName;
+    document.getElementById('logoBox').textContent = airlineName.split(' ')[0].toUpperCase();
+    document.getElementById('flightSubtitle').textContent = 'Flight • Economy';
+
+    // Route
+    const fromCode = route ? route.from : '---';
+    const toCode = route ? route.to : '---';
+    const dateRaw = route ? route.date : null;
+
+    // Convert codes into friendly city (if you stored readable city name earlier in flightRoute, use it; else show code)
+    // We assume your flightRoute stored codes (e.g., "DEL", "BOM"). If you have city names, adapt accordingly.
+    function prettyDate(iso){
+      if(!iso) return '—';
+      const d = new Date(iso);
+      const options = { weekday:'short', day:'2-digit', month:'short' };
+      return d.toLocaleDateString(undefined, options);
+    }
+
+    document.getElementById('fromCode').textContent = fromCode || '—';
+    document.getElementById('toCode').textContent = toCode || '—';
+    document.getElementById('fromCity').textContent = route && route.fromName ? route.fromName : fromCode;
+    document.getElementById('toCity').textContent = route && route.toName ? route.toName : toCode;
+
+    // Flight details
+    const shortCode = (airlineName.match(/\b[A-Z]{2,}/) || [airlineName.slice(0,2).toUpperCase()])[0];
+    const flightNum = makeFlightNumber(shortCode);
+    const pnr = makePNR();
+    const gate = makeGate();
+    const boardingTime = (() => {
+      // if date exists, set boarding 40-60 minutes before random flight hour
+      const now = dateRaw ? new Date(dateRaw) : new Date();
+      // set time to random hour between 6 and 22
+      const hour = randomInt(6,22);
+      const min = [0,10,15,20,30,40,45,50][randomInt(0,7)];
+      const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, min);
+      return dt.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    })();
+
+    document.getElementById('flightNum').textContent = flightNum;
+    document.getElementById('duration').textContent = randomInt(1,4) + 'h ' + pad(randomInt(0,59)) + 'm';
+    document.getElementById('dateVal').textContent = dateRaw ? prettyDate(dateRaw) : '—';
+    document.getElementById('boardTime').textContent = boardingTime;
+    document.getElementById('gateZone').textContent = gate;
+    document.getElementById('classVal').textContent = 'Economy';
+    document.getElementById('refCode').textContent = pnr;
+
+    // passengers list
+    const pList = document.getElementById('passengerList');
+    if(passengers.length === 0){
+      // if no passenger array, create one from userName
+      const row = document.createElement('div');
+      row.className = 'pass-row';
+      row.innerHTML = `<div>${userName}</div><div>${selectedSeat}</div>`;
+      pList.appendChild(row);
+    } else {
+      passengers.forEach((p, idx) => {
+        const row = document.createElement('div');
+        row.className = 'pass-row';
+        const name = p.name || p.fullName || ('Passenger ' + (idx+1));
+        const age = p.age ? ('Age ' + p.age) : '';
+        row.innerHTML = `<div><strong>${name}</strong><div class="muted" style="font-weight:600;font-size:0.85rem;">${age}</div></div>
+                         <div style="text-align:right">${selectedSeat}</div>`;
+        pList.appendChild(row);
+      });
+    }
+
+    // stub
+    document.getElementById('passSeat').textContent = selectedSeat || '—';
+    document.getElementById('pnrBox').textContent = pnr;
+    document.getElementById('stubFlight').textContent = flightNum;
+    document.getElementById('stubZone').textContent = gate;
+    document.getElementById('stubFare').textContent = total ? '₹' + total : '—';
+
+    // color theming
+    document.getElementById('accentBand').style.background = accent;
+    document.getElementById('logoBox').style.background = accent;
+    document.getElementById('logoBox').style.color = '#fff';
+
+    // print and home buttons
+    document.getElementById('printBtn').addEventListener('click', ()=> {
+      // Print-friendly: hide buttons, then print
+      window.print();
+    });
+    document.getElementById('homeBtn').addEventListener('click', ()=> window.location.href='index.html');
+
+    // Accessibility: allow user to download JSON of booking
+    // (optionally you could add a download button that serializes these fields)
+  </script>
+</body>
+</html>

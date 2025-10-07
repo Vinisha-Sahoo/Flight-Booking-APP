@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passenger Details - SkyBook</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <span class="plane">✈️</span> SkyBook
+    </div>
+    <div style="color:#555; font-size:1.2rem; margin-right:40px;">
+      Welcome, <span id="userName"></span>
+    </div>
+  </header>
+  <div style="margin-top:100px;">
+    <div style="width:70%;margin:0 auto;">
+      <div style="height:8px;background:#e5eaf6;border-radius:4px;box-shadow:0 2px 8px #e5eaf6;">
+        <div style="width:20%;height:100%;background:#2563eb;border-radius:4px;"></div>
+      </div>
+      <div style="text-align:right;color:#555;margin-top:8px;">Step 1 of 5</div>
+    </div>
+    <div style="display:flex;justify-content:center;align-items:center;height:70vh;">
+      <form id="passengerForm"
+        style="background:#fff;color:#000;padding:40px 50px;border-radius:20px;box-shadow:0 4px 24px #e5eaf6;width:450px;">
+        <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:30px;">Passenger Details</h1>
+        <label>
+          Number of Passengers:
+          <input type="number" id="numPassengers" min="1" value="1" style="margin-bottom:20px;width:100px;">
+        </label>
+        <div id="passengerFields"></div>
+        <button type="submit" class="primary-btn" style="width:100%;font-size:1.2rem;padding:18px 0;">Next</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Show user name from localStorage
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || "";
+    const passengerFields = document.getElementById("passengerFields");
+    const numPassengersInput = document.getElementById("numPassengers");
+
+    function renderPassengerFields(count) {
+      passengerFields.innerHTML = "";
+      for (let i = 1; i <= count; i++) {
+        passengerFields.innerHTML += `
+          <div style="margin-bottom:20px;">
+            <h3 style="margin-bottom:10px;">Passenger ${i}</h3>
+            <input type="text" name="name${i}" placeholder="Passenger Name" required style="margin-bottom:10px;width:100%;padding:12px;border-radius:8px;border:1px solid #e5eaf6;font-size:1.1rem;">
+            <input type="number" name="age${i}" placeholder="Age" required style="margin-bottom:10px;width:100%;padding:12px;border-radius:8px;border:1px solid #e5eaf6;font-size:1.1rem;">
+          </div>
+        `;
+      }
+    }
+
+    // Initial render
+    renderPassengerFields(numPassengersInput.value);
+
+    // Update fields when number changes
+    numPassengersInput.addEventListener("input", (e) => {
+      let count = parseInt(e.target.value) || 1;
+      if (count < 1) count = 1;
+      renderPassengerFields(count);
+    });
+
+    // Handle Passenger Form Submission
+    document.getElementById("passengerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Collect passenger data
+      const num = parseInt(document.getElementById("numPassengers").value);
+      const passengers = [];
+      for (let i = 1; i <= num; i++) {
+        const name = e.target[`name${i}`].value;
+        const age = e.target[`age${i}`].value;
+        passengers.push({ name, age });
+      }
+
+      // Store passenger data temporarily
+      localStorage.setItem("passengers", JSON.stringify(passengers));
+
+      // Go to flight route page
+      window.location.href = "flightRoute.html";
+    });
+
+  </script>
+</body>
+
+</html>

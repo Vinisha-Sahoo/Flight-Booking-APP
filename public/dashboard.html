@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyBook Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(to right, #2563eb, #1e40af);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Poppins", sans-serif;
+      flex-direction: column;
+      text-align: center;
+    }
+    .welcome {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome" id="welcomeMsg">Welcome, User!</div>
+  <p>Fill out your flight details below ✈️ (coming soon)</p>
+
+  <script>
+    const name = localStorage.getItem("userName");
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${name}!`;
+  </script>
+</body>
+</html>

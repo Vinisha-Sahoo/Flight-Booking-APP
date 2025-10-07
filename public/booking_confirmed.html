@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Booking Confirmed - SkyBook</title>
+    <style>
+        :root {
+            --blue: #2563eb;
+            --bg1: #e0f2ff;
+            --bg2: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            color: #06233a;
+            overflow: hidden;
+        }
+
+        .card {
+            width: 920px;
+            max-width: 95%;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.12);
+            padding: 36px;
+            text-align: center;
+            position: relative;
+        }
+
+        .tick {
+            font-size: 5rem;
+            color: #16a34a;
+            display: block;
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(.4);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        h1 {
+            margin: 12px 0 4px;
+            font-size: 2.4rem;
+            color: var(--blue);
+        }
+
+        p.sub {
+            color: #475569;
+            margin: 0 0 18px;
+            font-size: 1rem;
+        }
+
+        .plane-anim {
+            position: absolute;
+            right: -60px;
+            top: -40px;
+            font-size: 3.2rem;
+            transform: rotate(-10deg);
+            animation: fly 5s linear infinite;
+            opacity: 0.9;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translateX(-40px) rotate(-8deg);
+            }
+
+            50% {
+                transform: translateX(-10px) rotate(0deg);
+            }
+
+            100% {
+                transform: translateX(-40px) rotate(-8deg);
+            }
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .btn.primary {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--blue);
+            border: 2px solid rgba(37, 99, 235, 0.12);
+        }
+
+        /* small meta row */
+        .meta {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-top: 18px;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width:520px) {
+            .card {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>✅ Booking Confirmed!</h1>
+        <p class="sub">Your ticket has been issued. Enjoy your trip — and safe travels! ✈️</p>
+
+        <div class="meta">
+            <div id="metaAir">Airline: —</div>
+            <div id="metaFare">Fare: —</div>
+            <div id="metaSeat">Seat: —</div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn primary" id="homeBtn">Return Home</button>
+            <button class="btn ghost" id="showPassBtn">Show Boarding Pass</button>
+        </div>
+
+        <div class="plane-anim">✈️</div>
+    </div>
+
+    <script>
+        // populate small meta data
+        const airline = JSON.parse(localStorage.getItem('selectedAirline') || 'null');
+        const total = localStorage.getItem('totalPrice') || null;
+        const seat = localStorage.getItem('selectedSeat') || 'Not selected';
+        document.getElementById('metaAir').textContent = 'Airline: ' + (airline ? airline.name : '—');
+        document.getElementById('metaFare').textContent = 'Fare: ' + (total ? '₹' + total : '—');
+        document.getElementById('metaSeat').textContent = 'Seat: ' + seat;
+
+        document.getElementById('homeBtn').addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('showPassBtn').addEventListener('click', () => window.location.href = 'boarding_pass.html');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Route - SkyBook</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="plane">✈️</span> SkyBook
+    </div>
+    <div style="color:#555; font-size:1.2rem; margin-right:40px;">
+      Welcome, <span id="userName"></span>
+    </div>
+  </header>
+
+  <div style="margin-top:100px;">
+    <div style="width:70%;margin:0 auto;">
+      <div style="height:8px;background:#e5eaf6;border-radius:4px;box-shadow:0 2px 8px #e5eaf6;">
+        <div style="width:40%;height:100%;background:#2563eb;border-radius:4px;"></div>
+      </div>
+      <div style="text-align:right;color:#555;margin-top:8px;">Step 2 of 5</div>
+    </div>
+
+    <div style="display:flex;justify-content:center;align-items:center;height:70vh;">
+      <form id="routeForm" style="background:#fff;color:#000;padding:40px 50px;border-radius:20px;box-shadow:0 4px 24px #e5eaf6;width:450px;">
+        <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:30px;">Flight Route</h1>
+
+        <label for="fromCity">From:</label>
+        <select id="fromCity" required style="margin-bottom:20px;width:100%;padding:12px;border-radius:8px;border:1px solid #e5eaf6;font-size:1.1rem;">
+          <option value="">Select departure city</option>
+        </select>
+
+        <label for="toCity">To:</label>
+        <select id="toCity" required style="margin-bottom:20px;width:100%;padding:12px;border-radius:8px;border:1px solid #e5eaf6;font-size:1.1rem;">
+          <option value="">Select destination city</option>
+        </select>
+
+        <label for="travelDate">Date of Travel:</label>
+        <input type="date" id="travelDate" required style="margin-bottom:30px;width:100%;padding:12px;border-radius:8px;border:1px solid #e5eaf6;font-size:1.1rem;">
+
+        <button type="submit" class="primary-btn" style="width:100%;font-size:1.2rem;padding:18px 0;">Next</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- Show user name ---
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || "";
+
+    // --- City List with Codes ---
+    const cities = {
+      "Chennai": "MAA",
+      "Bhubaneswar": "BBI",
+      "Delhi": "DEL",
+      "Mumbai": "BOM",
+      "Kolkata": "CCU",
+      "Bengaluru": "BLR",
+      "Hyderabad": "HYD",
+      "Pune": "PNQ",
+      "Jaipur": "JAI",
+      "Ahmedabad": "AMD",
+      "Goa": "GOI",
+      "Kochi": "COK",
+      "Lucknow": "LKO",
+      "Patna": "PAT",
+      "Guwahati": "GAU",
+      "Varanasi": "VNS",
+      "Visakhapatnam": "VTZ",
+      "Indore": "IDR",
+      "Raipur": "RPR",
+      "Surat": "STV"
+    };
+
+    // --- Populate dropdowns ---
+    const fromSelect = document.getElementById("fromCity");
+    const toSelect = document.getElementById("toCity");
+
+    for (const [city, code] of Object.entries(cities)) {
+      const option1 = document.createElement("option");
+      option1.value = code;
+      option1.textContent = `${city} (${code})`;
+      fromSelect.appendChild(option1);
+
+      const option2 = document.createElement("option");
+      option2.value = code;
+      option2.textContent = `${city} (${code})`;
+      toSelect.appendChild(option2);
+    }
+
+    // --- Form submission ---
+    document.getElementById("routeForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const from = fromSelect.value;
+      const to = toSelect.value;
+      const date = document.getElementById("travelDate").value;
+
+      if (from === to) {
+        alert("Departure and destination cities cannot be the same!");
+        return;
+      }
+
+      // Save data temporarily
+      localStorage.setItem("flightRoute", JSON.stringify({ from, to, date }));
+
+      // Redirect to next page
+      window.location.href = "airline.html";
+    });
+  </script>
+</body>
+</html>
